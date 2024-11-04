@@ -278,6 +278,7 @@ async def main(websocket_client):
             vad_enabled=True,
             vad_analyzer=SileroVADAnalyzer(),
             vad_audio_passthrough=True,
+            serializer=ProtobufFrameSerializer(),
         ),
     )
 
