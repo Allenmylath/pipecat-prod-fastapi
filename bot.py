@@ -18,7 +18,10 @@ from pipecat.processors.frame_processor import FrameDirection
 from pipecat.services.cartesia import CartesiaTTSService
 from pipecat.services.deepgram import DeepgramSTTService, DeepgramTTSService
 from pipecat.services.openai import OpenAILLMContext, OpenAILLMService, OpenAILLMContextFrame
-from websocket_server import WebsocketServerParams, WebsocketServerTransport
+from pipecat.transports.network.fastapi_websocket import (
+    FastAPIWebsocketTransport,
+    FastAPIWebsocketParams,
+)
 from pipecat.vad.silero import SileroVADAnalyzer
 
 load_dotenv(override=True)
@@ -267,16 +270,16 @@ class IntakeProcessor:
         await result_callback(None)
 
 async def main():
-    transport = WebsocketServerTransport(
-        params=WebsocketServerParams(
-            host="",
-            port=int(os.environ["PORT"]),
+
+    transport = FastAPIWebsocketTransport(
+        websocket=websocket_client,
+        params=FastAPIWebsocketParams(
             audio_out_enabled=True,
-            add_wav_header=True,
+            add_wav_header=False,
             vad_enabled=True,
             vad_analyzer=SileroVADAnalyzer(),
             vad_audio_passthrough=True,
-        )
+        ),
     )
 
     llm = OpenAILLMService(
