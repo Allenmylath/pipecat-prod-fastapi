@@ -1,8 +1,9 @@
 import asyncio
 import uvicorn
+import os
 from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Dict
+from bot import main
 
 # Create FastAPI app
 app = FastAPI()
@@ -23,22 +24,19 @@ async def websocket_endpoint(websocket: WebSocket):
         await websocket.accept()
         print("WebSocket connection accepted")
         
-        # Create a global websocket_client variable that bot.py can access
-        global websocket_client
-        websocket_client = websocket
-        
-        # Import and run the bot
-        from bot import main
-        await main()
+        # Call main with the websocket parameter
+        await main(websocket)
         
     except Exception as e:
         print(f"Error in WebSocket connection: {e}")
 
 if __name__ == "__main__":
+    # Get port from environment variable for Heroku compatibility
+    port = int(os.getenv("PORT", 8765))
     uvicorn.run(
         "server:app",
         host="0.0.0.0",
-        port=8765,
-        reload=True,  # Enable auto-reload during development
+        port=port,
+        reload=True,
         log_level="info"
     )
