@@ -269,9 +269,9 @@ class IntakeProcessor:
         logger.info(f"Data saved to Firebase for function: {function_name}")
         await result_callback(None)
 
-async def main(websocket):
+async def main(websocket_client):
     transport = FastAPIWebsocketTransport(
-        websocket=websocket,
+        websocket=websocket_client,
         params=FastAPIWebsocketParams(
             audio_out_enabled=True,
             add_wav_header=False,
