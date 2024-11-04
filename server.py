@@ -17,6 +17,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+async def heartbeat(websocket: WebSocket):
+    """Send ping message every 30 seconds to keep connection alive"""
+    try:
+        while True:
+            await asyncio.sleep(30)
+            await websocket.send_text("ping")
+            print("Ping sent")
+    except Exception as e:
+        print(f"Heartbeat error: {e}")
+        raise
+
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     try:
@@ -24,9 +35,20 @@ async def websocket_endpoint(websocket: WebSocket):
         await websocket.accept()
         print("WebSocket connection accepted")
         
-        # Call main with the websocket parameter
-        await main(websocket)
+        # Start heartbeat task
+        heartbeat_task = asyncio.create_task(heartbeat(websocket))
         
+        try:
+            # Call main with the websocket parameter
+            await main(websocket)
+        finally:
+            # Cancel heartbeat when main exits
+            heartbeat_task.cancel()
+            try:
+                await heartbeat_task
+            except asyncio.CancelledError:
+                pass
+            
     except Exception as e:
         print(f"Error in WebSocket connection: {e}")
 
