@@ -22,6 +22,7 @@ from pipecat.transports.network.fastapi_websocket import (
     FastAPIWebsocketTransport,
     FastAPIWebsocketParams,
 )
+from pipecat.serializers.protobuf import ProtobufFrameSerializer
 from pipecat.vad.silero import SileroVADAnalyzer
 
 load_dotenv(override=True)
