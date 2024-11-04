@@ -275,7 +275,7 @@ async def main(websocket_client):
         websocket=websocket_client,
         params=FastAPIWebsocketParams(
             audio_out_enabled=True,
-            add_wav_header=False,
+            add_wav_header=True,
             vad_enabled=True,
             vad_analyzer=SileroVADAnalyzer(),
             vad_audio_passthrough=True,
