@@ -348,5 +348,5 @@ async def main(websocket):
         print(f"New client connected. Fresh context created: {context}")
         await task.queue_frames([OpenAILLMContextFrame(context)])
 
-    runner = PipelineRunner()
+    runner = PipelineRunner(handle_sigint=False)
     await runner.run(task)
