@@ -269,10 +269,9 @@ class IntakeProcessor:
         logger.info(f"Data saved to Firebase for function: {function_name}")
         await result_callback(None)
 
-async def main():
-
+async def main(websocket):
     transport = FastAPIWebsocketTransport(
-        websocket=websocket_client,
+        websocket=websocket,
         params=FastAPIWebsocketParams(
             audio_out_enabled=True,
             add_wav_header=False,
@@ -351,6 +350,3 @@ async def main():
 
     runner = PipelineRunner()
     await runner.run(task)
-
-if __name__ == "__main__":
-    asyncio.run(main())
