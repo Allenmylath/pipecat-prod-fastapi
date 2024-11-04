@@ -349,6 +349,9 @@ async def main(websocket_client):
         
         print(f"New client connected. Fresh context created: {context}")
         await task.queue_frames([OpenAILLMContextFrame(context)])
+    @transport.event_handler("on_client_disconnected")
+    async def on_client_disconnected(transport, client):
+        await task.queue_frames([EndFrame()])
 
     runner = PipelineRunner(handle_sigint=False)
     await runner.run(task)
